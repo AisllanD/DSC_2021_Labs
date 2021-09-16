@@ -1,14 +1,16 @@
 package ufpb.dsc.lab1.sevicos;
 
 import java.util.ArrayList;
-
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import ufpb.dsc.lab1.dtos.ItemDeAtualizacaoDeDisciplina;
+
+import ufpb.dsc.lab1.dtos.atualizaNomeDisciplina;
+import ufpb.dsc.lab1.dtos.atualizaNotaDisciplina;
 import ufpb.dsc.lab1.entidades.Disciplinas;
 import ufpb.dsc.lab1.excecoes.DisciplinaNaoEncontradaException;
 import ufpb.dsc.lab1.excecoes.NomeDeDisciplinaInvalidoException;
@@ -53,28 +55,45 @@ public class DadosDiciplina {
 		return disciplinasPorId.get(id);
 	}
 	
-	public Disciplinas atualizaItemDaDisciplina(long id, ItemDeAtualizacaoDeDisciplina itemDeAtualizacao) {
+	
+	public Disciplinas deletaDisciplina(long id) {
 		Disciplinas disciplina = recuperaPorId(id).get();
-		switch (itemDeAtualizacao.getAtributo()) {
-		case "nome":
-			if(disciplinaComEsteNomeJaExiste(itemDeAtualizacao.getNovoValor()))
-					throw new NomeDeDisciplinaInvalidoException("Nome para disciplina inválido.", 
-																"Uma disciplina já está cadastra com este nome.");
-			disciplina.setNome(itemDeAtualizacao.getNovoValor());
-			break;
 		
-		case "notas":
-			double [] novaNota = null;
-			disciplina.setNotas(novaNota);
-			break;
-		}
+		return disciplina.setVisibilidade(false);
 		
+	}
+	
+	public Disciplinas atualizaItemNomeDisciplina(long id, atualizaNomeDisciplina atualizaNome) {
+		Disciplinas disciplina = recuperaPorId(id).get();
+		
+		if(disciplinaComEsteNomeJaExiste(atualizaNome.getNovoNome()))
+			throw new NomeDeDisciplinaInvalidoException("Nome para disciplina inválido.", 
+														"Uma disciplina já está cadastra com este nome.");
+		disciplina.setNome(atualizaNome.getNovoNome());
+		return disciplina;
+	}
+	
+	public Disciplinas atualizaItemNotaDisciplina(long id, atualizaNotaDisciplina atualizaNota) {
+		Disciplinas disciplina = recuperaPorId(id).get();
+		
+		disciplina.setNotas(atualizaNota.getNovaNota());
 		return disciplina;
 	}
 	
 	public boolean disciplinaComEsteNomeJaExiste(String nome) {
 		return recuperaPorNome(nome).isPresent();
 	}
+	
+	public Disciplinas retornaPorMaiorNota() {
+		ArrayList<Disciplinas> disciplinas = new ArrayList<>();
+		
+		for (int i = 0; i < disciplinasPorNome.size(); i++) {
+			disciplinas.add((Disciplinas) disciplinasPorNome);
+		}
+		Collections.sort(disciplinas);
+		return null;
+	}
+	
 	
 	
 	
